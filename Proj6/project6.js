@@ -38,20 +38,10 @@ bool IntersectShadowRay(Ray ray) {
 	for (int i = 0; i < NUM_SPHERES; i++) {
 		Sphere sphere = spheres[i];
 
-		float discriminant = pow(dot(ray.dir, (ray.pos - sphere.center)), 2.0) -
-			(dot(ray.dir, ray.dir) * (dot((ray.pos - sphere.center), (ray.pos - sphere.center)) - pow(sphere.radius, 2.0)));
-
-		if (discriminant >= 0.0) {
-			foundHit = true;
-		}
-
-		float tVal = ((-1.0 * dot(ray.dir, (ray.pos - sphere.center))) - sqrt(discriminant)) / dot(ray.dir, ray.dir);
-		if (tVal < 0.0) {
-			foundHit = false;
-		}
-
-		if (foundHit) {
-			return foundHit;
+		float t = dot(sphere.center - ray.pos, ray.dir);
+ 
+		if (t >= 0.0 && length(sphere.center - (ray.pos + ray.dir * t)) < sphere.radius) {
+			return true;
 		}
 	}
 
