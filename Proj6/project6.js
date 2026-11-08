@@ -59,21 +59,23 @@ bool IntersectRay( inout HitInfo hit, Ray ray ) {
 	for (int i = 0; i < NUM_SPHERES; i++) {
 		Sphere sphere = spheres[i];
 
-		float discriminant = pow(dot(ray.dir, (ray.pos - sphere.center)), 2.0) -
-			(dot(ray.dir, ray.dir) * (dot((ray.pos - sphere.center), (ray.pos - sphere.center)) - pow(sphere.radius, 2.0)));
+		ray.dir = normalize(ray.dir);
+		float t = dot(sphere.center - ray.pos, ray.dir);
+ 
+		float y = length(sphere.center - (ray.pos + ray.dir * t));
 
-		if (discriminant >= 0.0) {
-			float t0 = (-(dot(ray.dir, (ray.pos - sphere.center))) - sqrt(discriminant)) / (dot(ray.dir, ray.dir));
+		if (t >= 0.0 && y < sphere.radius) {
+			float x = sqrt(sphere.radius * sphere.radius - y * y);
+			float t0 = t - x;
 
-			if (t0 > 0.0 && t0 <= hit.t) {
-				foundHit = true;
+			if (t0 >= hit.t) continue;
 
-				hit.t = t0;
-				hit.position = ray.pos + (ray.dir * t0);
-				hit.normal = normalize((hit.position - sphere.center) / sphere.radius);
+			hit.t = t0;
+			hit.position = ray.pos + (ray.dir * t0);
+			hit.normal = normalize((hit.position - sphere.center) / sphere.radius);
+			hit.mtl = sphere.mtl;
 
-				hit.mtl = sphere.mtl;
-			}
+			foundHit = true;
 		}
 	}
 
