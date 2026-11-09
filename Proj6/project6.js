@@ -72,7 +72,7 @@ bool IntersectRay( inout HitInfo hit, Ray ray ) {
 
 			hit.t = t0;
 			hit.position = ray.pos + (ray.dir * t0);
-			hit.normal = normalize((hit.position - sphere.center) / sphere.radius);
+			hit.normal = normalize(hit.position - sphere.center);
 			hit.mtl = sphere.mtl;
 
 			foundHit = true;
